@@ -1,0 +1,30 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+
+[packages]
+dash = "==1.9.1"
+dash-bootstrap-components = "*"
+gunicorn = "*"
+plotly = "*"
+pandas = "*"
+numpy = "*"
+seaborn = "*"
+matplotlib = "*"
+sklearn = "*"
+scipy = "*"
+category-encoders = "*"
+chart-studio = "*"
+pdp = "*"
+shap = "*"
+notebook = "*"
+jupyter = "*"
+dash-core-components = "*"
+mapbox = "*"
+joblib = "==1.0.1"
+
+[requires]
+python_version = "3"
