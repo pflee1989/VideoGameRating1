@@ -17,9 +17,9 @@ column1 = dbc.Col(
         
             ## Process
 
-            Please visit my blog per the medium icon at the bottom, or this link:
             
-            https://philipfeiranlee.medium.com/video-game-rating-trying-to-simulate-whats-in-the-head-of-the-raters-165c6cf73d16
+            
+            
 
             """
         ),

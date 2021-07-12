@@ -1,8 +1,8 @@
 # Imports from 3rd party libraries
-# import joblib
+
 from joblib import load
-pipeline = load('assets/pipeline_joblib')
-# a copy of the filepath (r'C:\Users\pflee\Desktop\Local Work\Video-Game-Rating-Formal\Video-Game-Rating\assets\pipline_joblib')
+model = load('assets/model_rf.joblib')
+
 import pandas as pd
 import dash
 import dash_bootstrap_components as dbc
@@ -10,39 +10,9 @@ import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
 
-# from joblib import load
-# pipeline = load('assets/pipeline.joblib')
 
 # Imports from this application
 from app import app
-
-
-# Get the Function in
-@app.callback(
-Output('prediction-content', 'children'),
-[Input('strong_janguage', 'value'), Input('no_descriptors', 'value'), Input('mild_fantasy_violence', 'value'), Input('blood_and_gore', 'value'), Input('blood', 'value'), Input('strong_sexual_content', 'value')],
-# [Input('blood_and_gore', 'value'), Input('strong_janguage', 'value')],
-# [Input('strong_sexual_content', 'value'), Input('mild_fantasy_violence', 'value')]
-)
-# Order of the Variables in the App Version
-# strong_janguage	no_descriptors	mild_fantasy_violence	blood_and_gore	blood	strong_sexual_content
-def predict(strong_janguage, no_descriptors, 
-            mild_fantasy_violence, blood_and_gore, blood, 
-            strong_sexual_content):
-    # print(strong_janguage)
-    df = pd.Series(
-        # columns = ["strong_janguage", "no_descriptors", 
-        #     "blood", "mild_fantsy_violence", 
-        #     "blood_and_gore",  "strong_sexual_content"],
-        data =[strong_janguage, no_descriptors, 
-            mild_fantasy_violence, blood_and_gore, blood, 
-            strong_sexual_content]),
-    y_pred = pipeline.predict(df)[0]
-    y_pred_prob= pipeline.predict_proba(df)[0]
-    prob =  100 - (round(y_pred_prob[0], 2))*100
-    # print(y_pred)
-    return "The game is {}% likely to receive a {} rating.".format(prob, y_pred) 
-
 
 
 # 2 column layout. 1st column width = 4/12
@@ -55,64 +25,67 @@ column1 = dbc.Col(
             ## Predictions
 
             You Will Choose If A Particular Characteristic of Concern Is Present or Absent.
-            On the right, the plot shows the strength of each variable within this online GradientBoost model.  
+            Right below, the plot shows the strength of each selected feature within this online GradientBoost model.  
             
-            You will see that strong langauge is the most important indicator of maturity necessary for the game content. 
-            Blood and gore, blood, mild fantasy violence and no decriptor follow. 
+            You will see violence (in fantasy theme or not), bloody visuals, and languages are what set the games apart
+            in game ratings. 
 
-
-            As always, strong languages tend to be inappropriate >_<
+            As always, inapproriate languages and violence...set games apart in raing. >_<
             """
         ), 
-        html.Img(src='assets/GBC Important Features.png', className='img-fluid'),
+        html.Img(src='assets/gb_online.png', className='img-fluid'),
      
 
         
     
     ], 
-    md=4, 
+    md=3, 
     
 )
 
 column2 = dbc.Col(
     [
-             dcc.Markdown('Strong Language?'
+        
+        dcc.Markdown('Fantasy Violence?'
                      ), 
         dcc.Dropdown(
-            id='strong_janguage', 
+            id='fantasy_violence', 
             options = [
                 {'label': 'Yes', 'value': 1}, 
                 {'label': 'No', 'value': 0},     
             ], 
             value = '0', 
-            className='mb-5', 
-        ), 
-        # !/usr/bin/python3
-           dcc.Markdown('No Decription of the Content?'
+            className='mb-5'), 
+
+        
+        dcc.Markdown('Blood?'
                      ), 
         dcc.Dropdown(
-            id='no_descriptors', 
+            id='blood', 
             options = [
                 {'label': 'Yes', 'value': 1}, 
                 {'label': 'No', 'value': 0}, ], 
             value = '0', 
             className='mb-5', 
         ), 
-        #     dcc.Markdown('Fantasy Violence?'
-        #              ), 
-        # dcc.Dropdown(
-        #     id='fantasy_violence', 
-        #     options = [
-        #         {'label': 'Yes', 'value': '1'}, 
-        #         {'label': 'No', 'value': '0'}, ], 
-        #     value = 'Fantasy Violence', 
-        #     className='mb-5', 
-        # ), 
         
-               dcc.Markdown('Blood and Gore?'
+        
+        dcc.Markdown('Strong Language?'
                      ), 
         dcc.Dropdown(
-            id='blood_and_gore', 
+            id='strong_janguage', 
+            options = [
+                {'label': 'Yes', 'value': 1}, 
+                {'label': 'No', 'value': 0}, ], 
+            value = '0', 
+            className='mb-5', 
+        ), 
+        
+        
+        dcc.Markdown('Intense Violence?'
+                     ), 
+        dcc.Dropdown(
+            id='intense_violence', 
             options = [
                 {'label': 'Yes', 'value': 1}, 
                 {'label': 'No', 'value': 0}, ], 
@@ -120,31 +93,17 @@ column2 = dbc.Col(
             className='mb-5', 
         ), 
         html.H2('Game Rating', className='mb-5'), 
-        
-        #           dcc.Markdown('Mild Cartoon Violence?'
-        #              ), 
-        # dcc.Dropdown(
-        #     id='mild_cartoon_violence', 
-        #     options = [
-        #         {'label': 'Yes', 'value': '1'}, 
-        #         {'label': 'No', 'value': '0'}, ], 
-        #     value = 'Mild Cartoon Violence', 
-        #     className='mb-5', 
-        # ), 
-      
-   
-      
-        
+       
     ],
     md=4,
 )
 
 column3 = dbc.Col(
     [
-             dcc.Markdown('Blood?'
+        dcc.Markdown('Langauge?'
                      ), 
         dcc.Dropdown(
-            id='blood', 
+            id='langauge', 
             options = [
                 {'label': 'Yes', 'value': 1}, 
                 {'label': 'No', 'value': 0},     
@@ -152,56 +111,102 @@ column3 = dbc.Col(
             value = '0', 
             className='mb-5', 
         ), 
-        # !/usr/bin/python3
-           dcc.Markdown('Mild Fantasy Violence?'
+
+        dcc.Markdown('Mild Lyrics?'
                      ), 
         dcc.Dropdown(
-            id='mild_fantasy_violence', 
+            id='mild_lyrics', 
             options = [
                 {'label': 'Yes', 'value': 1}, 
                 {'label': 'No', 'value': 0}, ], 
             value = '0', 
             className='mb-5', 
         ), 
-        #     dcc.Markdown('Violence?'
-        #              ), 
-        # dcc.Dropdown(
-        #     id='violence', 
-        #     options = [
-        #         {'label': 'Yes', 'value': '1'}, 
-        #         {'label': 'No', 'value': '0'}, ], 
-        #     value = 'Violence', 
-        #     className='mb-5', 
-        # ), 
         
-               dcc.Markdown('Strong Sexual Content?'
+        dcc.Markdown('Console?'
                      ), 
         dcc.Dropdown(
-            id='strong_sexual_content', 
+            id='console', 
             options = [
                 {'label': 'Yes', 'value': 1}, 
                 {'label': 'No', 'value': 0}, ], 
             value = '0', 
             className='mb-5', 
         ), 
-        #   dcc.Markdown('Cartoon Violence?'
-        #              ), 
-        # dcc.Dropdown(
-        #     id='cartoon_violence', 
-        #     options = [
-        #         {'label': 'Yes', 'value': '1'}, 
-        #         {'label': 'No', 'value': '0'}, ], 
-        #     value = 'Cartoon Violence', 
-        #     className='mb-5', 
-        # ), 
         
-#  dcc.Link(dbc.Button('Get Your Game Rating', color='primary'), href='/Result')
+        dcc.Markdown('Suggestive Themes?'), 
+        dcc.Dropdown(
+            id='suggestive_themes', 
+            options = [
+                {'label': 'Yes', 'value': 1}, 
+                {'label': 'No', 'value': 0}, ], 
+            value = '0', 
+            className='mb-5', 
+        ), 
+
+        
+
     html.Div(id='prediction-content', className='lead')  
   ],
     md=4,
-# column4 = dbc.Col(
-#     [
-#     ]
+
 )
 
 layout = dbc.Row([column1, column2, column3])
+
+
+# Get the Function in
+@app.callback(
+Output('prediction-content', 'children'),
+[Input('strong_janguage', 'value'),
+ Input('fantasy_violence', 'value'), 
+ Input('blood', 'value'), 
+ Input('suggestive_themes', 'value'), 
+ Input('intense_violence', 'value'),
+ Input('language', 'value'),  
+ Input('console', 'value'), 
+ Input('mild_lyrics', 'value')
+ ],)
+
+
+def predict(strong_janguage, fantasy_violence, blood, suggestive_themes, 
+            intense_violence, language, 
+            console, mild_lyrics):
+    df = pd.Dataframe(
+        columns = ["strong_janguage", "fantasy_violence", "blood", "suggestive_themes", 
+            "intense_violence", "language", 
+            "console", "mild_lyrics"],
+        data =[[strong_janguage, fantasy_violence, blood, suggestive_themes, 
+            intense_violence, language, 
+            console, mild_lyrics]]),
+    y_pred = model.predict(df)[0]
+    y_pred_prob= model.predict_proba(df)
+    E = round(y_pred_prob[0][0]*100, 2)
+    ET = round(y_pred_prob[0][1]*100, 2)
+    T = round(y_pred_prob[0][2]*100, 2)
+    M = round(y_pred_prob[0][3]*100, 2)
+    prob =  round(y_pred_prob[0], 2)*100
+    if y_pred == 'E':
+        return """{}: {}% |
+                 \nET: {}% |
+                 \nT: {}% | 
+                 \nM: {}%  
+            """.format(y_pred, E, ET, T, M)
+    if y_pred == 'ET':
+        return """E: {}% | 
+                  \n{}: {}% |  
+                  \nT: {}% |  
+                  \nM: {}%    
+            """.format(E, y_pred, ET, T, M)
+    if y_pred == "T":
+        return """E: {}% | 
+                \nET: {}% | 
+                \n{}: {}% | 
+                \nM: {}%   
+            """.format( E, ET, y_pred, T, M)
+    if y_pred == "M":
+        return """E: {}% | 
+                \nET: {}% | 
+                \nT: {}% | 
+                \n{}: {}%   
+            """.format(E, ET, T, y_pred, M)

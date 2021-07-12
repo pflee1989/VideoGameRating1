@@ -26,7 +26,7 @@ column1 = dbc.Col(
     
     # html.Img(src='assets/Rating Distribution.PNG', className='img-fluid'),
 
-    html.Img(src='assets/XGBoost All Features.png', className='img-fluid')
+    html.Img(src='assets/gb_all_features.png', className='img-fluid')
     
     ],
 )
